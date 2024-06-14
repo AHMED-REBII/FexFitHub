@@ -30,7 +30,6 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
     fetchExercisesData();
   }, [bodyPart, setExercises]);
 
-  // Ensure exercises is always an array
   const validExercises = Array.isArray(exercises) ? exercises : [];
 
   const indexOfLastExercise = currentPage * exercisesPerPage;
