@@ -10,7 +10,6 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const exercisesPerPage = 9;
 
-  // Call useEffect unconditionally at the top level of the component
   useEffect(() => {
     const fetchExercisesData = async () => {
       let exercisesData = [];
@@ -21,7 +20,7 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
         );
       } else {
         exercisesData = await fetchData(
-          `https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`,
+          `https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}?limit=15&offset=0`,
           exercisesOptions
         );
       }
@@ -31,9 +30,12 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
     fetchExercisesData();
   }, [bodyPart, setExercises]);
 
+  // Ensure exercises is always an array
+  const validExercises = Array.isArray(exercises) ? exercises : [];
+
   const indexOfLastExercise = currentPage * exercisesPerPage;
   const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
-  const currentExercises = exercises.slice(
+  const currentExercises = validExercises.slice(
     indexOfFirstExercise,
     indexOfLastExercise
   );
@@ -52,7 +54,7 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
       </Typography>
       <Stack
         direction="row"
-        sx={{ gap: { lg: "110px", xs: "50 px" } }}
+        sx={{ gap: { lg: "110px", xs: "50px" } }}
         flexWrap="wrap"
         justifyContent="center"
       >
@@ -61,12 +63,12 @@ const Exercises = ({ exercises, setExercises, bodyPart }) => {
         ))}
       </Stack>
       <Stack mt="100px" alignItems="center">
-        {exercises.length > 9 && (
+        {validExercises.length > 9 && (
           <Pagination
             color="standard"
             shape="rounded"
             defaultPage={1}
-            count={Math.ceil(exercises.length / exercisesPerPage)}
+            count={Math.ceil(validExercises.length / exercisesPerPage)}
             page={currentPage}
             onChange={paginate}
             size="large"
